@@ -1,0 +1,43 @@
+version: "3.3"
+services:
+  server:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    links:
+      - mongodb
+      - redis
+
+  redis:
+    image: redis:alpine
+    command: redis-server
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/var/lib/redis:z
+      - ./.docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    hostname: mongodb
+    volumes:
+      - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+      - mongodb:/data/db
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "27017:27017"
+    command: [ "-f", "/etc/mongod.conf" ]
+
+volumes:
+  mongodb:
+  redis:
