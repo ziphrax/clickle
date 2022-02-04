@@ -1,13 +1,8 @@
-// Uncomment these imports to begin using these cool features!
-
 import { service } from "@loopback/core";
 import { getModelSchemaRef, post, requestBody } from "@loopback/rest";
 import { LoginRequest, Player } from "../models";
 import { LoginResponse } from "../models/login-response.model";
 import { AuthenticationService } from "../services";
-
-// import {inject} from '@loopback/core';
-
 
 export class AuthController {
   constructor(

@@ -12,6 +12,11 @@ export class UnitBase extends Entity {
   @property({
     type: 'string',
     required: true,
+  }) unitType: 'fire' | 'water' | 'earth' | 'air' | 'light' | 'dark' | 'neutral';
+
+  @property({
+    type: 'string',
+    required: true,
   })
   unitName: string;
 
