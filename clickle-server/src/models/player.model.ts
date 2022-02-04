@@ -44,6 +44,15 @@ export class Player extends Entity {
   })
   lastLoginDate?: string;
 
+  @property({
+    type: 'string'
+  })
+  salt?: string;
+
+  @property({
+    type: 'string'
+  })
+  password?: string;
 
   constructor(data?: Partial<Player>) {
     super(data);

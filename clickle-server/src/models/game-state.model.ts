@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import { PlayerState } from './player-state.model';
 
 @model()
 export class GameState extends Entity {
@@ -9,29 +10,23 @@ export class GameState extends Entity {
   })
   gameId?: string;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  playerId: string;
+  @property(PlayerState)
+  player1: PlayerState;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  player1Id: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  player2Id: string;
+  @property(PlayerState)
+  player2: PlayerState;
 
   @property({
     type: 'number',
     required: true,
   })
   currentTurn: number;
+
+  @property() lastActionTime?: Date;
+
+  @property() timeStarted?: Date;
+
+  @property() coinReward?: number;
 
 
   constructor(data?: Partial<GameState>) {
