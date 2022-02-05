@@ -20,6 +20,9 @@ import {
 import {GameState} from '../models';
 import {GameStateRepository} from '../repositories';
 
+import {authenticate} from '@loopback/authentication';
+
+@authenticate('jwt')
 export class GameStateController {
   constructor(
     @repository(GameStateRepository)

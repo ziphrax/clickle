@@ -38,6 +38,8 @@ export class ActionService {
     const player = await this.playerRepository.findById(activePlayerId);
     const currentGameState = await this.gameStateRepository.findById(gameStateId);
 
+    if(!player && !currentGameState) throw new Error("Invalid player or game state");
+
     const newGameState = gameReducer(action, player, currentGameState);
 
     await this.gameStateRepository.updateById(gameStateId, newGameState);
@@ -60,4 +62,13 @@ export class ActionService {
       payload: {requestedAction: action, result}
     } as ActionResponse;
   }
+
+  async getGameActions(): Promise<string> {
+    return Promise.resolve(JSON.stringify(GAME_ACTIONS, null, 2));
+  }
+
+  async getPlayerActions(): Promise<string> {
+    return Promise.resolve(JSON.stringify(PLAYER_ACTIONS, null, 2));
+  }
+
 }

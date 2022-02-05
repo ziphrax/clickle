@@ -10,6 +10,14 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 
+import {AuthenticationComponent} from '@loopback/authentication';
+import {
+  JWTAuthenticationComponent,
+  SECURITY_SCHEME_SPEC,
+  UserServiceBindings,
+} from '@loopback/authentication-jwt';
+import { MongodbDataSource } from './datasources';
+
 export {ApplicationConfig};
 
 export class ClickleServerApplication extends BootMixin(
@@ -28,6 +36,14 @@ export class ClickleServerApplication extends BootMixin(
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
     });
+
+    this.component(AuthenticationComponent);
+    // Mount jwt component
+    this.component(JWTAuthenticationComponent);
+
+    // Bind datasource
+    this.dataSource(MongodbDataSource, UserServiceBindings.DATASOURCE_NAME);
+
     this.component(RestExplorerComponent);
 
     this.projectRoot = __dirname;
