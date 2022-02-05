@@ -11,7 +11,7 @@ export class Action extends Model {
   @property({
     type: 'object',
   })
-  payload?: object;
+  payload?: {starter?: "water" | "fire" | "earth"};
 
   @property({
     type: 'date'

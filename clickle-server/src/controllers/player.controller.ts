@@ -86,6 +86,7 @@ export class PlayerController {
   async find(
     @param.filter(Player) filter?: Filter<Player>,
   ): Promise<Player[]> {
+    filter = {...filter, where: {...filter?.where, playerUserId: this.user[securityId]}};
     return this.playerRepository.find(filter);
   }
 

@@ -1,35 +1,20 @@
-import {injectable, BindingScope} from '@loopback/core';
+import {injectable, BindingScope, service} from '@loopback/core';
 import { Action } from '../models/action.model';
 import { ActionResponse } from '../models/action-response.model';
-import { GameState, Player } from '../models';
 import GAME_ACTIONS from '../data/actions.game.data';
 import PLAYER_ACTIONS from '../data/actions.player.data';
 import { repository } from '@loopback/repository';
 import { GameStateRepository, PlayerRepository } from '../repositories';
-
-function gameReducer(action: Action, player: Player, gameState: GameState): GameState{
-  switch(action.action){
-    case GAME_ACTIONS.ACTION_GAME_DEV_TEST:
-      return gameState;
-    default:
-      throw new Error("Action not supported");
-  }
-}
-
-function playerReducer(action: Action): object{
-  switch(action.action){
-    case PLAYER_ACTIONS.ACTION_PLAYER_DEV_TEST:
-      return {};
-    default:
-      throw new Error("Action not supported");
-  }
-}
+import { PlayerReducerService } from './player-reducer.service';
+import { GameReducerService } from './game-reducer.service';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class ActionService {
   constructor(
+    @service(PlayerReducerService) public playerReducerService: PlayerReducerService,
+    @service(GameReducerService) public gameReducerService: GameReducerService,
     @repository(PlayerRepository) public playerRepository: PlayerRepository,
-    @repository(GameStateRepository) public gameStateRepository: GameStateRepository
+    @repository(GameStateRepository) public gameStateRepository: GameStateRepository,
   ) {}
 
   async resolveGameAction(action: Action, activePlayerId: string,  gameStateId: string): Promise<ActionResponse> {
@@ -40,7 +25,7 @@ export class ActionService {
 
     if(!player && !currentGameState) throw new Error("Invalid player or game state");
 
-    const newGameState = gameReducer(action, player, currentGameState);
+    const newGameState = await this.gameReducerService.reduce(action, player, currentGameState);
 
     await this.gameStateRepository.updateById(gameStateId, newGameState);
 
@@ -51,10 +36,11 @@ export class ActionService {
     } as ActionResponse;
   }
 
-  async resolvePlayerAction(action: Action): Promise<ActionResponse> {
+  async resolvePlayerAction(action: Action, activePlayerId: string,): Promise<ActionResponse> {
     action.timestamp = new Date();
 
-    const result = playerReducer(action);
+    const player = await this.playerRepository.findById(activePlayerId);
+    const result = await this.playerReducerService.reduce(action, player);
 
     return {
       action: action.action,

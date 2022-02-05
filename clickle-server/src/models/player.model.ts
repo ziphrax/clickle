@@ -23,18 +23,6 @@ export class Player extends User {
   playerName: string;
 
   @property({
-    type: 'string',
-    required: true,
-  })
-  playerEmail: string;
-
-  @property({
-    type: 'date',
-    required: true,
-  })
-  playerDOB: string;
-
-  @property({
     type: 'number',
     required: true,
   })

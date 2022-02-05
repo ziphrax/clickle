@@ -9,6 +9,9 @@ export class UnitMember extends Entity {
   })
   unitId?: string;
 
+  @property({type: 'string', required: true})
+  playerId: string;
+
   @property({
     type: 'string',
     required: true,
@@ -44,6 +47,11 @@ export class UnitMember extends Entity {
     required: true,
   })
   unitXP: number;
+
+  @property({
+    type: 'string',
+    required: true,
+  }) unitType: 'fire' | 'water' | 'earth' | 'air' | 'light' | 'dark' | 'neutral';
 
 
   constructor(data?: Partial<UnitMember>) {
