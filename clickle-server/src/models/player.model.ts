@@ -1,13 +1,20 @@
-import {Entity, model, property} from '@loopback/repository';
+import { User } from '@loopback/authentication-jwt';
+import { model, property} from '@loopback/repository';
 
 @model()
-export class Player extends Entity {
+export class Player extends User {
   @property({
     type: 'string',
     id: true,
     generated: true,
   })
   playerId?: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  playerUserId: string;
 
   @property({
     type: 'string',
@@ -43,16 +50,6 @@ export class Player extends Entity {
     type: 'date',
   })
   lastLoginDate?: string;
-
-  @property({
-    type: 'string'
-  })
-  salt?: string;
-
-  @property({
-    type: 'string'
-  })
-  password?: string;
 
   constructor(data?: Partial<Player>) {
     super(data);

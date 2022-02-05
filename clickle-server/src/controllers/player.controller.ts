@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -19,11 +21,19 @@ import {
 } from '@loopback/rest';
 import {Player} from '../models';
 import {PlayerRepository} from '../repositories';
+import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
+import { UserRepository } from '@loopback/authentication-jwt';
 
+//leaving this in as the idea is maybe can have multiple characters for a user
+
+@authenticate('jwt')
 export class PlayerController {
   constructor(
     @repository(PlayerRepository)
     public playerRepository : PlayerRepository,
+    @inject(SecurityBindings.USER, {optional: true})
+    public user: UserProfile,
+    @repository(UserRepository) protected userRepository: UserRepository,
   ) {}
 
   @post('/players')
@@ -43,7 +53,10 @@ export class PlayerController {
       },
     })
     player: Omit<Player, 'playerId'>,
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
   ): Promise<Player> {
+    player.playerUserId = currentUserProfile[securityId];
     return this.playerRepository.create(player);
   }
 

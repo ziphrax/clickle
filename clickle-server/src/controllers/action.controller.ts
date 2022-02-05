@@ -1,9 +1,11 @@
+import { authenticate } from "@loopback/authentication";
 import { service } from "@loopback/core";
 import { get, getModelSchemaRef, param, post, requestBody } from "@loopback/rest";
 import { ActionResponse } from "../models/action-response.model";
 import { Action } from "../models/action.model";
 import {ActionService} from '../services'
 
+@authenticate('jwt')
 export class ActionController {
   constructor(@service(ActionService) public actionService: ActionService) {}
 
@@ -17,7 +19,7 @@ export class ActionController {
     return this.actionService.getPlayerActions();
   }
 
-  @post('/action/game/{gameId}')
+  @post('/actions/game/{gameId}')
   async resolveGameAction(
     @param.path.string('gameId') gameId: string,
     @requestBody({
@@ -32,7 +34,7 @@ export class ActionController {
     return this.actionService.resolveGameAction(action, 'playerId', gameId);
   }
 
-  @post('/action/player')
+  @post('/actions/player')
   async resolvePlayerAction(@requestBody({
     content: {
       'application/json':{

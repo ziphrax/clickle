@@ -76,13 +76,12 @@ export class AuthController {
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
   ): Promise<{token: string}> {
-    // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
-    // convert a User object into a UserProfile object (reduced set of properties)
-    const userProfile = this.userService.convertToUserProfile(user);
 
-    // create a JSON Web Token based on the user profile
+    const userProfile = this.userService.convertToUserProfile(user);
+    
     const token = await this.jwtService.generateToken(userProfile);
+
     return {token};
   }
 
@@ -144,33 +143,4 @@ export class AuthController {
 
     return savedUser;
   }
-
-
-  // @post('/login')
-  // async login(@requestBody({
-  //   content: {
-  //     'application/json':{
-  //       schema: getModelSchemaRef(LoginRequest)
-  //     }
-  //   }
-  // }) loginRequest: LoginRequest): Promise<LoginResponse> {
-  //   return this.authenticationService.login(loginRequest);
-  // }
-
-  // @post('/register')
-  // async register(@requestBody({
-  //   content: {
-  //     'application/json':{
-  //       schema: getModelSchemaRef(Player, {exclude: ['playerId','createdDate','lastLoginDate','salt']})
-  //     }
-  //   }
-  // }) player: Player) : Promise<LoginResponse> {
-  //   return this.authenticationService.register(player);
-  // }
-
-  // @get('/whoami')
-  // async whoami(): Promise<UserProfile> {
-  //   return this.user;
-  // }
-
 }
