@@ -34,14 +34,17 @@ export class ActionController {
     return this.actionService.resolveGameAction(action, 'playerId', gameId);
   }
 
-  @post('/actions/player')
-  async resolvePlayerAction(@requestBody({
+  @post('/actions/player/{playerId}')
+  async resolvePlayerAction(
+    @param.path.string('playerId') playerId: string,
+    @requestBody({
     content: {
       'application/json':{
         schema: getModelSchemaRef(Action)
       }
     }
   }) action: Action) : Promise<ActionResponse> {
-    return this.actionService.resolvePlayerAction(action,);
+    //TODO check player is who they say
+    return this.actionService.resolvePlayerAction(action,playerId);
   }
 }

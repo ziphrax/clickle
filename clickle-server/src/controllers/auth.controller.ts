@@ -1,6 +1,4 @@
-import { service } from "@loopback/core";
 import { get, getModelSchemaRef, post, requestBody, SchemaObject } from "@loopback/rest";
-import { AuthenticationService } from "../services";
 import _ from 'lodash';
 
 import {inject} from '@loopback/core';
@@ -50,8 +48,6 @@ export class AuthController {
     @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
     @repository(UserRepository) protected userRepository: UserRepository,
-    @service(AuthenticationService)
-    public authenticationService: AuthenticationService,
   ) { }
 
   @post('/auth/login', {

@@ -47,7 +47,7 @@ export class PlayerController {
         'application/json': {
           schema: getModelSchemaRef(Player, {
             title: 'NewPlayer',
-            exclude: ['playerId'],
+            exclude: ['playerId',"playerUserId","coinTotal","createdDate","lastLoginDate"],
           }),
         },
       },
@@ -57,6 +57,9 @@ export class PlayerController {
     currentUserProfile: UserProfile,
   ): Promise<Player> {
     player.playerUserId = currentUserProfile[securityId];
+    player.coinTotal = parseInt(process.env.STARTING_COIN_TOTAL ?? "0");
+    player.createdDate = new Date();
+    player.lastLoginDate = new Date();
     return this.playerRepository.create(player);
   }
 

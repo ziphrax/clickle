@@ -1,8 +1,7 @@
-import { User } from '@loopback/authentication-jwt';
-import { model, property} from '@loopback/repository';
+import { Entity, model, property} from '@loopback/repository';
 
 @model()
-export class Player extends User {
+export class Player extends Entity {
   @property({
     type: 'string',
     id: true,
@@ -12,9 +11,9 @@ export class Player extends User {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  playerUserId: string;
+  playerUserId?: string;
 
   @property({
     type: 'string',
@@ -26,18 +25,18 @@ export class Player extends User {
     type: 'number',
     required: true,
   })
-  coinTotal: number;
+  coinTotal?: number;
 
   @property({
     type: 'date',
     required: true,
   })
-  createdDate: string;
+  createdDate?: Date;
 
   @property({
     type: 'date',
   })
-  lastLoginDate?: string;
+  lastLoginDate?: Date;
 
   constructor(data?: Partial<Player>) {
     super(data);
