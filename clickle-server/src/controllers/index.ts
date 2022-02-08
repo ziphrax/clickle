@@ -4,3 +4,4 @@ export * from './unit-base.controller';
 export * from './game-state.controller';
 export * from './player.controller';
 export * from './action.controller';
+export * from './unit-member.controller';

@@ -19,8 +19,8 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Player} from '../models';
-import {PlayerRepository} from '../repositories';
+import {Player, UnitMember} from '../models';
+import {PlayerRepository, UnitMemberRepository} from '../repositories';
 import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
 import { UserRepository } from '@loopback/authentication-jwt';
 
@@ -31,6 +31,8 @@ export class PlayerController {
   constructor(
     @repository(PlayerRepository)
     public playerRepository : PlayerRepository,
+    @repository(UnitMemberRepository)
+    public unitMemberRepository : UnitMemberRepository,
     @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
     @repository(UserRepository) protected userRepository: UserRepository,
@@ -126,6 +128,32 @@ export class PlayerController {
     @param.filter(Player, {exclude: 'where'}) filter?: FilterExcludingWhere<Player>
   ): Promise<Player> {
     return this.playerRepository.findById(id, filter);
+  }
+
+  @get('/players/{playerId}/unit-members')
+  @response(200, {
+    description: 'Array of Unit Members model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(UnitMember, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async findPlayerMembers(
+    @param.path.string('playerId') playerId: string,
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
+  ){
+    const player = await this.playerRepository.findOne({where:{playerId, playerUserId: currentUserProfile[securityId]}});
+    
+    if(!player ||player?.playerId !== playerId){
+      throw new Error("You are not authorized to access this player's unit members");
+    }
+    
+    return this.unitMemberRepository.find({where:{playerId: player?.playerId}});
   }
 
   @patch('/players/{id}')
